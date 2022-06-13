@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  php:
+    # PHP version settings. Allowed value is php56, php71, php73, php74 or php80.
+    build: ./docker/php74
+    volumes:
+      - './www:/var/www/html'
+    # для использования localhost локальной машины
+    # network_mode: "host"
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - './www:/var/www/html'
+      - './docker/nginx/conf.d:/etc/nginx/conf.d'
+
+  mysql:
+    image: mysql:8
+    volumes:
+      - './data/mysql:/var/lib/mysql'
+      - './docker/mysql:/etc/mysql/conf.d'
+    user: "1000"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bitrix
+      - TZ=Europe/Moscow
+    ports:
+      - 3306:3306
